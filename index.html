@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>パスワード生成ツール</title>
+  <meta name="description" content="ここにサイトの説明が入ります">
+  <link href="css/normalize.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/genpassword.js"></script>
+</head>
+
+<body id="index">
+
+  <header>
+    <div class="header-container">
+      <div class="sitetitle">
+        <h1 class="title">
+          パスワード生成ツール
+        </h1>
+        <div class="description">
+          <p>パスワードに使用できるランダム文字列を生成します。</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-container">
+
+      <article class="columns-main">
+        <section class="content parameter-form">
+          <form id="generate-form">
+            <table>
+              <tr>
+                <td>文字種</td>
+                <td>
+                  <label><input type="checkbox" name="character" value="upper_eng">英字（大文字）</label>
+                  <label><input type="checkbox" name="character" value="lower_eng">英字（小文字）</label>
+                  <label><input type="checkbox" name="character" value="number">数字</label>
+                  <label><input type="checkbox" name="character" value="symbol">記号</label>
+                </td>              
+              </tr>
+              <tr>
+                <td>文字数</td>
+                <td>
+                  <label><input type="radio" name="number" value="8">8文字</label>
+                  <label><input type="radio" name="number" value="12">12文字</label>
+                  <label><input type="radio" name="number" value="input"><input type="number" name="number_input"></label>
+                </td>              
+              </tr>
+              <tr>
+                <td>個数</td>
+                <td>
+                  <label><input type="radio" name="outputs" value="10">10個</label>
+                  <label><input type="radio" name="outputs" value="20">20個</label>
+                  <label><input type="radio" name="outputs" value="input"><input type="number" name="outputs_input"></label>
+                </td>              
+              </tr>
+              <tr>
+                <td colspan="2"><input type="submit" value="生成" id="generate"></td>
+              </tr>
+            </table>
+          </form>
+        </section>
+        <section class="content result-view" id="result-view">
+          <div>
+          </div>
+        </section>
+      </article>
+    
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+    </div>
+  </footer>
+
+</body>
+
+<script>
+// パスワードの生成
+const generate = document.getElementById('generate');
+generate.addEventListener('click', function(e) {
+  // submitイベントの停止
+  e.preventDefault();
+  
+  // 画面入力値のセット
+  const genPassword =  new GenPassword();
+  genPassword.character = getCheckboxValue('character'); // 文字種
+  genPassword.number = getRadioValue('number'); // 文字数
+  genPassword.outputs = getRadioValue('outputs'); // 個数
+
+  // パスワードの生成
+  const password = genPassword.generate();
+
+  // 結果の出力
+  const resultView = document.getElementById('result-view');
+  for (let i = 0; i < password.length; i++) {
+    resultView.innerHTML += '<div>' + password[i] + '</div>';
+  }
+
+  return false;
+})
+
+// 選択されたチェックボックスの値を取得する
+function getCheckboxValue(target) {
+  const elements = document.getElementsByName(target);
+  let values = [];
+  for (let i = 0; i < elements.length; i++) {
+    if (elements.item(i).checked) {
+      values.push(elements.item(i).value);
+    }
+  }
+  return values;
+}
+
+// 選択されたラジオボタンの値を取得する
+function getRadioValue(target) {
+  const elements = document.getElementsByName(target);
+  let value = 0;
+  for (let i = 0; i < elements.length; i++) {
+    if (elements.item(i).checked) {
+      if (elements.item(i).value == 'input') {
+        const input = document.getElementsByName(target + '_input');
+        value = input.item(0).value
+      } else {
+        value = elements.item(i).value;
+      }
+    }
+  }
+  return value;
+}
+
+</script>
+
+</html>
+
